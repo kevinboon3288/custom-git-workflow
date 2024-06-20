@@ -67,6 +67,7 @@ def main():
     create_commits(repo_directory)
     get_current_status(repo_directory)
     push(new_branch_name, repo_directory)
+    exit(1)
 
 if __name__ == "__main__":
     main()
