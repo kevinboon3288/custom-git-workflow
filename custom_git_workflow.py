@@ -24,7 +24,6 @@ def main():
         proceed_commit = input("Do you want to proceed to commit? (y/n): ").strip().lower()
         if proceed_commit != 'y':
             print("Commit aborted.")
-            return
 
         commit_message = input("Enter commit message: ").strip()
         print(commit_message)
