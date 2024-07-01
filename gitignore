@@ -1,0 +1,17 @@
+bin
+obj
+/.vs
+
+# Ignore .idea directory
+.idea/
+
+# Ignore Python compiled files
+__pycache__/
+*.pyc
+
+# Ignore virtual environments
+venv/
+env/
+
+# Ignore other IDE directories
+.vscode/

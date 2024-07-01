@@ -2,6 +2,7 @@ import subprocess
 import os
 from Commons.exceptions import WorkflowException
 
+
 class GitRepository:
     def __init__(self, repo_directory):
         if not os.path.isdir(repo_directory):
@@ -13,10 +14,10 @@ class GitRepository:
         if result.returncode != 0:
             raise WorkflowException(result.stderr.strip())
         return result.stdout.strip()
-    
+
     def get_current_branch(self):
         return self.execute_command("git rev-parse --abbrev-ref HEAD")
-    
+
     def switch_new_branch(self, branch_name):
         self.execute_command(f"git checkout -b {branch_name}")
 

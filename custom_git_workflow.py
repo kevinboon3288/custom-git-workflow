@@ -4,6 +4,7 @@
 from Commons.exceptions import WorkflowException
 from Modules.git_repository import GitRepository
 
+
 def main():
     try:
         repo_dir = input("Enter the directory path of the git repository: ")
@@ -42,8 +43,9 @@ def main():
 
     except ValueError as ve:
         print(ve)
-    except WorkflowException as wfex:
-        print(f"Git command error: {wfex}")
+    except WorkflowException as workflow_ex:
+        print(f"Git command error: {workflow_ex}")
+
 
 if __name__ == "__main__":
     main()
