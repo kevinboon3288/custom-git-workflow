@@ -4,70 +4,89 @@
 import subprocess
 import os
 
-def execute_command(command, cwd):
-    result = subprocess.run(command, cwd=cwd, text=True, capture_output=True, shell=True)
-    print(result.stdout)
-    if result.stderr:
-        print(result.stderr)
+class WorkflowException(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+        self.log_Error(message)
 
-def create_branch(repo):
-    new_branch_name = input("Enter the new branch name: ").strip()
-    print("Created new branch and switching to it....")
-    if ' ' in new_branch_name:
-        print(f"[Error] Branch name is not allowed to have white space: {new_branch_name}\n")
-        print("******** New Prompt *********\n")
-        main()
-    execute_command(f"git checkout -b {new_branch_name}", repo)
-    print("******** Done *********\n")
-    return new_branch_name
+    @staticmethod
+    def log_Error(message):
+        with open('git_errors.log', 'a') as log_file:
+            log_file.write(f"{message}\n")
+        print(f"[ERR] {message}")
 
-def add_all_changed_files(repo):
-    print("Adding all changed files....")
-    execute_command("git add .", repo) 
-    print("Added all the files\n")
-    print("******** Done *********\n")
+class GitRepository:
+    def __init__(self, repo_directory):
+        if not os.path.isdir(repo_directory):
+            raise ValueError(f"Invalid repo directory path: {repo_directory}")
+        self.repo_directory = repo_directory
 
-def get_current_status(repo):
-    print("Listed down the current status of Git:")
-    execute_command("git status", repo)
-    print("******** Done *********\n")
-
-def create_commits(repo):
-    proceed_commit = input("Do you want to proceed to commit? (y/n): ").strip().lower()
-    if proceed_commit != 'y':
-        print("[Abort] Commit aborted.")
-        return
+    def execute_command(self, command):
+        result = subprocess.run(command, cwd=self.repo_directory, text=True, capture_output=True, shell=True)
+        if result.returncode != 0:
+            raise WorkflowException(result.stderr.strip())
+        return result.stdout.strip()
     
-    commit_messages = input("Enter commit message: ").strip()
-    print("Commiting the changes....\n")
-    execute_command(f'git commit -m "{commit_messages}"', repo)
-    print("******** Done *********\n")
-
-def push(branch, repo):
-    proceed_push = input("Do you want to push the changes? (y/n): ").strip().lower()
-    if proceed_push != 'y':
-        print("[Abort] Push aborted.")
-        return
+    def get_current_branch(self):
+        return self.execute_command("git rev-parse --abbrev-ref HEAD")
     
-    print("Pushing the changes....")
-    execute_command(f"git push -f origin {branch}", repo)
-    print("******** Done *********\n")
+    def switch_new_branch(self, branch_name):
+        self.execute_command(f"git checkout -b {branch_name}")
+
+    def add_all_changes(self):
+        self.execute_command("git add .")
+
+    def get_branch_status(self):
+        return self.execute_command("git status")
+
+    def commit_changes(self, message):
+        self.execute_command(f'git commit -m "{message}"')
+
+    def push_changes(self, branch_name):
+        self.execute_command(f"git push -f origin {branch_name}")
 
 
 def main():
-    repo_directory = input("Enter the directory path of the git repository: ")
+    try:
+        repo_dir = input("Enter the directory path of the git repository: ")
+        repo = GitRepository(repo_dir)
 
-    if not os.path.isdir(repo_directory):
-        print("[Abort] Unable to found the directory path")
-        return
+        option = input("Do you want to create a new branch? (y/n): ").strip().lower()
+        if option == 'y':
+            new_branch_name = input("Enter the new branch name: ").strip()
+            repo.switch_new_branch(new_branch_name)
+            print(f"Switched to a new branch '{new_branch_name}'.")
+        else:
+            new_branch_name = repo.get_current_branch()
 
-    new_branch_name = create_branch(repo_directory)
-    add_all_changed_files(repo_directory)
-    get_current_status(repo_directory)
-    create_commits(repo_directory)
-    get_current_status(repo_directory)
-    push(new_branch_name, repo_directory)
-    exit(1)
+        repo.add_all_changes()
+
+        print(repo.get_branch_status())
+
+        proceed_commit = input("Do you want to proceed to commit? (y/n): ").strip().lower()
+        if proceed_commit != 'y':
+            print("Commit aborted.")
+            return
+
+        commit_message = input("Enter commit message: ").strip()
+        print(commit_message)
+        repo.commit_changes(commit_message)
+
+        print(repo.get_branch_status())
+
+        proceed_push = input("Do you want to push the changes? (y/n): ").strip().lower()
+        if proceed_push != 'y':
+            print("Push aborted.")
+            return
+
+        repo.push_changes(new_branch_name)
+        print(f"Changes pushed to branch '{new_branch_name}'.")
+        exit(1)
+
+    except ValueError as ve:
+        print(ve)
+    except WorkflowException as wfex:
+        print(f"Git command error: {wfex}")
 
 if __name__ == "__main__":
     main()
