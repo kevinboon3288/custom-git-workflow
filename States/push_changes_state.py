@@ -1,5 +1,6 @@
 from .git_command_state import GitCommandState
 
+
 class PushChangesState(GitCommandState):
     def execute(self, context):
         branch_name = context.repo.get_current_branch()

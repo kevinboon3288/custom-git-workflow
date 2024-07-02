@@ -2,6 +2,7 @@ import subprocess
 import os
 from Commons.exceptions import WorkflowException
 
+
 class GitRepository:
     def __init__(self, repo_directory):
         if not os.path.isdir(repo_directory):

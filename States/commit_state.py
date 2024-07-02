@@ -1,5 +1,6 @@
 from .git_command_state import GitCommandState
 
+
 class CommitState(GitCommandState):
     def execute(self, context):
         commit_message = input("Enter commit message: ").strip()

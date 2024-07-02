@@ -11,6 +11,7 @@ from States.push_changes_state import PushChangesState
 from States.get_logs import GetLogsState
 from Commons.exceptions import WorkflowException
 
+
 def main():
     try:
         repo_dir = input("Enter the directory path of the git repository: ")
@@ -40,6 +41,7 @@ def main():
         print(ve)
     except WorkflowException as we:
         print(f"Git command error: {we}")
+
 
 if __name__ == "__main__":
     main()
