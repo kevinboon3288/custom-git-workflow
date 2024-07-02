@@ -14,6 +14,9 @@ class GitRepository:
             raise WorkflowException(result.stderr.strip())
         return result.stdout.strip()
 
+    def get_logs(self):
+        return self.execute_command("git log")
+
     def get_current_branch(self):
         return self.execute_command("git rev-parse --abbrev-ref HEAD")
 

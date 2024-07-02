@@ -8,6 +8,7 @@ from States.commit_state import CommitState
 from States.status_check_state import StatusCheckState
 from States.checkout_state import CheckoutState
 from States.push_changes_state import PushChangesState
+from States.get_logs import GetLogsState
 from Commons.exceptions import WorkflowException
 
 def main():
@@ -22,10 +23,11 @@ def main():
             "status": StatusCheckState(),
             "checkout": CheckoutState(),
             "push": PushChangesState(),
+            "log": GetLogsState()
         }
 
         while True:
-            command = input("Enter a git command (add, commit, status, checkout, push) or 'exit' to quit: ").strip().lower()
+            command = input("Enter a git command (add, commit, status, checkout, push, log) or 'exit' to quit: ").strip().lower()
             if command == 'exit':
                 break
             if command in commands:
