@@ -1,5 +1,5 @@
-# Custom Git Workflow Script
-Welcome to Custom Git Workflow Repository! This script helps to create a workflow with a set of git commands.
+# PyGitAutomator
+Welcome to PyGitAutomator Repository! This Python script helps to create a custom workflow with a set of git commands.
 
 [![License](https://img.shields.io/github/license/kevinboon3288/custom-git-workflow)](https://github.com/kevinboon3288/version-controller/blob/main/LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/kevinboon3288/custom-git-workflow)](https://github.com/kevinboon3288/version-controller/issues)
